@@ -5,10 +5,13 @@ const express = require('express');
 // getting router
 const router = express.Router();
 
-// Listen for /social-web/ end point
-router.get('/', (req, res) => {
-    res.render('./home-page');
-});
+// App Controllers
+const userController = require('../controllers/userController');
 
+// Listen for /social-web/ end point
+router.get('/', userController.homePage);
+
+// Listen for /social-web/create-user
+router.post('/create-user', userController.register);
 
 module.exports = router;

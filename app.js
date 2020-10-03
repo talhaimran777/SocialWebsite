@@ -5,6 +5,12 @@ const path = require('path');
 // Allow express to use static files
 app.use(express.static('public'));
 
+// Binds the submitted data the req.body object
+app.use(express.urlencoded({extended: false}));
+
+// If you want to send json data the server
+app.use(express.json());
+
 // Register a view engine
 app.set('view engine','ejs');
 
