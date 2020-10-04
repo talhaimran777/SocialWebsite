@@ -29,5 +29,5 @@ app.use('/social-web', routes);
 //     res.render('home-page');
 // });
 
-
-app.listen(3000, () => console.log('listening on port 3000!'));
+// exporting this app object to db file
+module.exports = app;
