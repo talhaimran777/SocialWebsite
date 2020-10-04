@@ -7,7 +7,7 @@ exports.register = (req, res) =>{
         res.send(user.errors);
     }
     else{
-        res.send('User registered successfully!');
+        res.redirect('/');
     }
     
 }

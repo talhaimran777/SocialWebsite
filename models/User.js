@@ -31,6 +31,10 @@ User.prototype.register = function(){
     this.validate();
 
     // if only the data is validated push the data to the database
+    const db = require('../db');
+    db.collection('users').insertOne({username: this.data.username, email: this.data.email, password: this.data.password}, ()=>{
+        console.log('Inserted Successfully!');
+    });
 }
 
 module.exports = User;
