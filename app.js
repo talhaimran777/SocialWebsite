@@ -17,13 +17,8 @@ app.set('view engine','ejs');
 // Get the router object
 const routes = require('./routes/routes');
 
-// If you get a get request to / redirect it to /devtal
-app.get('/', (req, res) => {
-    res.redirect('/social-web');
-});
-
-// Use the deined routes
-app.use('/social-web', routes);
+// Start routing from /
+app.use('/', routes);
 
 // app.get('/', (req, res) => {
 //     res.render('home-page');
