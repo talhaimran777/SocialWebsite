@@ -1,5 +1,8 @@
 // Let's  require validator
+const db = require('../db');
+const usersCollection = db.collection('users');
 const validator = require('validator');
+
 let User = function(data){
     this.data = data;
     this.errors = [];
@@ -11,7 +14,7 @@ User.prototype.validate = function(){
     if(!validator.isLength(this.data.username, {min: 3, max: 20}) || validator.isNumeric(this.data.username)){
         this.errors.push('Invalid username!');
     }
-
+    else
     // Check for if user name contains () {} [] \ | * & ^ % $ # @ ! ` ~ < .
     if(!validator.isAlphanumeric(this.data.username)){
         this.errors.push('Invalid username!');
@@ -31,10 +34,12 @@ User.prototype.register = function(){
     this.validate();
 
     // if only the data is validated push the data to the database
-    const db = require('../db');
-    db.collection('users').insertOne({username: this.data.username, email: this.data.email, password: this.data.password}, ()=>{
-        console.log('Inserted Successfully!');
-    });
+
+    if(this.errors === 0){
+        usersCollection.insertOne({username: this.data.username, email: this.data.email, password: this.data.password}, ()=>{
+            console.log('Inserted Successfully!');
+        });
+    }
 }
 
 module.exports = User;

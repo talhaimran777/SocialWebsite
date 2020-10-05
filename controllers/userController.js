@@ -9,7 +9,6 @@ exports.register = (req, res) =>{
     else{
         res.redirect('/');
     }
-    
 }
 exports.login = (req, res) =>{
 }
