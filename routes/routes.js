@@ -14,4 +14,7 @@ router.get('/', userController.homePage);
 // Listen for /social-web/create-user
 router.post('/create-user', userController.register);
 
+// Listen for /social-web/create-user
+router.post('/login', userController.login);
+
 module.exports = router;

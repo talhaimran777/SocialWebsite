@@ -8,6 +8,21 @@ let User = function(data){
     this.errors = [];
 }
 
+User.prototype.cleanUp = function(){
+    
+    // Data other than string is not required
+    if(typeof(this.data.username !== 'string')){this.data.username = ''}
+    if(typeof(this.data.email !== 'string')){this.data.email = ''}
+    if(typeof(this.data.password !== 'string')){this.data.password = ''}
+
+    // Removing any bogus properties / Extra properties
+    this.data = {
+        username: this.data.username.trim().toLowerCase(),
+        email: this.data.email.trim().toLowerCase(),
+        password: this.data.password,
+    }
+}
+
 User.prototype.validate = function(){
     // Write code here to validate entered data
 
@@ -29,12 +44,11 @@ User.prototype.validate = function(){
     }
 }
 
-
 User.prototype.register = function(){
+    this.cleanUp();
     this.validate();
 
     // if only the data is validated push the data to the database
-
     if(this.errors === 0){
         usersCollection.insertOne({username: this.data.username, email: this.data.email, password: this.data.password}, ()=>{
             console.log('Inserted Successfully!');
