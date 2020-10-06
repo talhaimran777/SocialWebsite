@@ -1,8 +1,10 @@
 const mongodb = require('mongodb');
+const dotenv = require('dotenv');
 
-const connectionString = `mongodb+srv://talhaimran:talha157@cluster0.u8ext.gcp.mongodb.net/SocialWebsite?retryWrites=true&w=majority`;
+// This will tell node.js to look for .env file
+dotenv.config();
 
-mongodb.connect(connectionString,{useNewUrlParser: true, useUnifiedTopology: true}, (err, client) =>{
+mongodb.connect(process.env.CONNECTIONSTRING,{useNewUrlParser: true, useUnifiedTopology: true}, (err, client) =>{
     if(!err){
         console.log('Connected to the database!');
         // Client.db() returns the database to work with
@@ -10,7 +12,7 @@ mongodb.connect(connectionString,{useNewUrlParser: true, useUnifiedTopology: tru
 
         // Now require in app to start express server
         const app = require('./app');
-        app.listen(3000, () => {
+        app.listen(process.env.PORT, () => {
             console.log('Listening on port 3000!');
         });
     }
