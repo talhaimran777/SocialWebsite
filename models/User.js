@@ -2,6 +2,8 @@
 const db = require('../db');
 const usersCollection = db.collection('users');
 const validator = require('validator');
+const bcrypt = require('bcryptjs');
+const salt = bcrypt.genSaltSync(10);
 
 let User = function(data){
     this.data = data;
@@ -64,9 +66,11 @@ User.prototype.register = function(){
     this.validate();
 
     // if only the data is validated push the data to the database
-
     if(this.errors.length === 0){
-        usersCollection.insertOne({username: this.data.username, email: this.data.email, password: this.data.password}, ()=>{
+        // Entered password hash value will get stored as a password in the database
+        this.data.password = bcrypt.hashSync(this.data.password, salt);
+
+        usersCollection.insertOne(this.data, ()=>{
             console.log('Inserted Successfully!');
         });
     }
@@ -80,12 +84,15 @@ User.prototype.login = function(){
 
         usersCollection.findOne({username: this.data.username})
         .then((user) =>{
-            if(user && user.password === this.data.password){
+            if(user && bcrypt.compareSync(this.data.password, user.password)){
                 resolve('Congrats/ Sign In Successfull!');
             }
             else{
                 reject('Error/ Sign In Failed!');
             }
+        })
+        .catch(() =>{
+            console.log('Please try again later!');
         });
     });
 }
