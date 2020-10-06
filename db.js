@@ -8,7 +8,7 @@ mongodb.connect(process.env.CONNECTIONSTRING,{useNewUrlParser: true, useUnifiedT
     if(!err){
         console.log('Connected to the database!');
         // Client.db() returns the database to work with
-        module.exports = client.db();
+        module.exports = client;
 
         // Now require in app to start express server
         const app = require('./app');

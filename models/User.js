@@ -1,5 +1,5 @@
 // Let's  require validator
-const db = require('../db');
+const db = require('../db').db();
 const usersCollection = db.collection('users');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');

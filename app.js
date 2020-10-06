@@ -2,11 +2,12 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const session = require('express-session');
-
+const MonogStore = require('connect-mongo')(session);
 // Configure the sessions
 
 let sessionOptions = session({
     secret: 'keyboard cat',
+    store: new MonogStore({client: require('./db')}),
     resave: false,
     saveUninitialized: false,
     cookie: {

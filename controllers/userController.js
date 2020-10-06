@@ -27,7 +27,7 @@ exports.logout = (req, res) =>{
 
 exports.homePage = (req, res) =>{
     if(req.session.user){
-        res.send('Wellcome to Application/ Social Web!');
+        res.render('home-dashboard', {name: req.session.user.username});
     }
     else{
         res.render('home-page');
