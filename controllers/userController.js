@@ -12,7 +12,9 @@ exports.register = (req, res) =>{
 }
 exports.login = (req, res) =>{
     let user = new User(req.body);
-    user.login();
+    user.login()
+    .then(result => res.send(result))
+    .catch(err => res.send(err));
 }
 exports.logout = (req, res) =>{
 }

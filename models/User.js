@@ -6,33 +6,35 @@ const validator = require('validator');
 let User = function(data){
     this.data = data;
     this.errors = [];
+    this.loggedIn;
 }
 
 User.prototype.cleanUpForSignup = function(){
-    
+
     // Data other than string is not required
-    if(typeof(this.data.username !== 'string')){this.data.username = ''}
-    if(typeof(this.data.email !== 'string')){this.data.email = ''}
-    if(typeof(this.data.password !== 'string')){this.data.password = ''}
+    if(typeof(this.data.username)  !== 'string'){this.data.username = ''}
+    if(typeof(this.data.email)  !== 'string'){this.data.email = ''}
+    if(typeof(this.data.password)  !== 'string'){this.data.password = ''}
+
 
     // Removing any bogus properties / Extra properties
     this.data = {
         username: this.data.username.trim().toLowerCase(),
         email: this.data.email.trim().toLowerCase(),
-        password: this.data.password,
+        password: this.data.password
     }
 }
 
 User.prototype.cleanUpForLogin = function(){
-    
+
     // Data other than string is not required
-    if(typeof(this.data.username !== 'string')){this.data.username = ''}
-    if(typeof(this.data.password !== 'string')){this.data.password = ''}
+    if(typeof(this.data.username) != 'string'){this.data.username = ''}
+    if(typeof(this.data.password) != 'string'){this.data.password = ''}
 
     // Removing any bogus properties / Extra properties
     this.data = {
         username: this.data.username.trim().toLowerCase(),
-        password: this.data.password,
+        password: this.data.password.trim().toLowerCase(),
     }
 }
 
@@ -62,7 +64,8 @@ User.prototype.register = function(){
     this.validate();
 
     // if only the data is validated push the data to the database
-    if(this.errors === 0){
+
+    if(this.errors.length === 0){
         usersCollection.insertOne({username: this.data.username, email: this.data.email, password: this.data.password}, ()=>{
             console.log('Inserted Successfully!');
         });
@@ -72,13 +75,18 @@ User.prototype.register = function(){
 
 
 User.prototype.login = function(){
-    this.cleanUpForLogin  
-    db.collection('users').findOne({username: this.data.username},(err, user) => {
-        if(user && user.password === this.data.password){
-            console.log('login Successfully!', user);
-        }else{
-            console.log('Invalid username/password!');
-        }
+    return new Promise((resolve, reject) =>{
+        this.cleanUpForLogin();
+
+        usersCollection.findOne({username: this.data.username})
+        .then((user) =>{
+            if(user && user.password === this.data.password){
+                resolve('Congrats/ Sign In Successfull!');
+            }
+            else{
+                reject('Error/ Sign In Failed!');
+            }
+        });
     });
 }
 
