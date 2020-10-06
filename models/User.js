@@ -8,7 +8,7 @@ let User = function(data){
     this.errors = [];
 }
 
-User.prototype.cleanUp = function(){
+User.prototype.cleanUpForSignup = function(){
     
     // Data other than string is not required
     if(typeof(this.data.username !== 'string')){this.data.username = ''}
@@ -19,6 +19,19 @@ User.prototype.cleanUp = function(){
     this.data = {
         username: this.data.username.trim().toLowerCase(),
         email: this.data.email.trim().toLowerCase(),
+        password: this.data.password,
+    }
+}
+
+User.prototype.cleanUpForLogin = function(){
+    
+    // Data other than string is not required
+    if(typeof(this.data.username !== 'string')){this.data.username = ''}
+    if(typeof(this.data.password !== 'string')){this.data.password = ''}
+
+    // Removing any bogus properties / Extra properties
+    this.data = {
+        username: this.data.username.trim().toLowerCase(),
         password: this.data.password,
     }
 }
@@ -45,7 +58,7 @@ User.prototype.validate = function(){
 }
 
 User.prototype.register = function(){
-    this.cleanUp();
+    this.cleanUpForSignup();
     this.validate();
 
     // if only the data is validated push the data to the database
@@ -54,6 +67,19 @@ User.prototype.register = function(){
             console.log('Inserted Successfully!');
         });
     }
+}
+
+
+
+User.prototype.login = function(){
+    this.cleanUpForLogin  
+    db.collection('users').findOne({username: this.data.username},(err, user) => {
+        if(user && user.password === this.data.password){
+            console.log('login Successfully!', user);
+        }else{
+            console.log('Invalid username/password!');
+        }
+    });
 }
 
 module.exports = User;

@@ -11,6 +11,8 @@ exports.register = (req, res) =>{
     }
 }
 exports.login = (req, res) =>{
+    let user = new User(req.body);
+    user.login();
 }
 exports.logout = (req, res) =>{
 }
