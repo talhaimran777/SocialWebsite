@@ -1,6 +1,22 @@
 const express = require('express');
 const app = express();
 const path = require('path');
+const session = require('express-session');
+
+// Configure the sessions
+
+let sessionOptions = session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24,
+        httpOnly: true
+    } 
+});
+
+// Allowing sessions
+app.use(sessionOptions);
 
 // Allow express to use static files
 app.use(express.static('public'));
