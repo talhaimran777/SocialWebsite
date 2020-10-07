@@ -18,11 +18,12 @@ exports.login = (req, res) =>{
             username: user.data.username
         }
         // Allowing the session data to get saved to the database and then redirects to /
-        req.session.save(() => {
-            res.redirect('/');
-        });
+        req.session.save(() => res.redirect('/'));
     })
-    .catch(err => res.send(err));
+    .catch(err => {
+        req.flash('errors', err);
+        req.session.save(() => res.redirect('/'));
+    });
 }
 exports.logout = (req, res) =>{
     // Destroy the current user session from the db
@@ -40,6 +41,6 @@ exports.homePage = (req, res) =>{
         res.render('home-dashboard', {name: req.session.user.username});
     }
     else{
-        res.render('home-page');
+        res.render('home-page', {errors: req.flash('errors')});
     }
 }

@@ -3,8 +3,9 @@ const app = express();
 const path = require('path');
 const session = require('express-session');
 const MonogStore = require('connect-mongo')(session);
-// Configure the sessions
+const flash = require('connect-flash');
 
+// Configure the sessions
 let sessionOptions = session({
     secret: 'keyboard cat',
     store: new MonogStore({client: require('./db')}),
@@ -18,6 +19,9 @@ let sessionOptions = session({
 
 // Allowing sessions
 app.use(sessionOptions);
+
+// Use flash messages package
+app.use(flash());
 
 // Allow express to use static files
 app.use(express.static('public'));
