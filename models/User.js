@@ -57,7 +57,7 @@ User.prototype.validate = function(){
     }
 
     if(!validator.isLength(this.data.password, {min: 8, max: 20})){
-        this.errors.push('Invalid password');
+        this.errors.push('Password should be 8 to 20 characters long!');
     }
 }
 

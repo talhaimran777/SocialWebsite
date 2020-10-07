@@ -4,7 +4,10 @@ exports.register = (req, res) =>{
     let user = new User(req.body);
     user.register();
     if(user.errors.length !== 0 ){
-        res.send(user.errors);
+        user.errors.forEach((err) =>{
+            req.flash('regErrors',err);
+        })
+        req.session.save(() => res.redirect('/'));
     }
     else{
         res.redirect('/');
@@ -41,6 +44,6 @@ exports.homePage = (req, res) =>{
         res.render('home-dashboard', {name: req.session.user.username});
     }
     else{
-        res.render('home-page', {errors: req.flash('errors')});
+        res.render('home-page', {errors: req.flash('errors'), regErrors: req.flash('regErrors')});
     }
 }
