@@ -23,6 +23,11 @@ app.use(sessionOptions);
 // Use flash messages package
 app.use(flash());
 
+app.use((req, res, next) =>{
+    res.locals.user = req.session.user;
+    next();
+});
+
 // Allow express to use static files
 app.use(express.static('public'));
 
