@@ -5,7 +5,7 @@ exports.register = (req, res) =>{
     user.register()
     .then(() => {
         // If registration was successful then bring the user into the application
-        req.session.user = {username: user.data.username};
+        req.session.user = {username: user.data.username,  avatar: user.avatar};
         req.session.save(() => res.redirect('/'));
     })
     .catch((regErrors) =>{
@@ -21,7 +21,8 @@ exports.login = (req, res) =>{
     user.login()
     .then(result => {
         req.session.user = {
-            username: user.data.username
+            username: user.data.username,
+            avatar: user.avatar
         }
         // Allowing the session data to get saved to the database and then redirects to /
         req.session.save(() => res.redirect('/'));
@@ -44,7 +45,7 @@ exports.logout = (req, res) =>{
 
 exports.homePage = (req, res) =>{
     if(req.session.user){
-        res.render('home-dashboard', {name: req.session.user.username});
+        res.render('home-dashboard', {name: req.session.user.username, avatar: req.session.user.avatar});
     }
     else{
         res.render('home-page', {errors: req.flash('errors'), regErrors: req.flash('regErrors')});
