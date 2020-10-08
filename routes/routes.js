@@ -7,7 +7,8 @@ const router = express.Router();
 
 // App Controllers
 const userController = require('../controllers/userController');
-
+const postsController = require('../controllers/postsController');
+// User related routes
 // Listen for / end point
 router.get('/', userController.homePage);
 
@@ -19,5 +20,9 @@ router.post('/login', userController.login);
 
 // Listen for /logout
 router.post('/logout', userController.logout);
+
+
+// Posts related routes
+router.get('/create-post',userController.checkLoggedIn, postsController.createPost);
 
 module.exports = router;
