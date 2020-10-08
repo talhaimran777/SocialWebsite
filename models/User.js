@@ -8,7 +8,6 @@ const salt = bcrypt.genSaltSync(10);
 let User = function(data){
     this.data = data;
     this.errors = [];
-    this.loggedIn;
 }
 
 User.prototype.cleanUpForSignup = function(){
@@ -41,39 +40,75 @@ User.prototype.cleanUpForLogin = function(){
 }
 
 User.prototype.validate = function(){
-    // Write code here to validate entered data
+    return new Promise(async (resolve, reject) => {
+        // Write code here to validate entered data
+        if(!validator.isLength(this.data.username, {min: 3, max: 20})){
+            this.errors.push('Username must be 3 to 20 characters long!');
+        }
+        else if(validator.isNumeric(this.data.username)){
+            this.errors.push('Username cannot contain only numbers!');
+        }
+        // Check for if user name contains () {} [] \ | * & ^ % $ # @ ! ` ~ < .
+        else if(!validator.isAlphanumeric(this.data.username)){
+            this.errors.push('Invalid username!');
+        }
+    
+        if(!validator.isEmail(this.data.email)){
+            this.errors.push('Invalid email!');
+        }
+    
+        if(!validator.isLength(this.data.password, {min: 8, max: 20})){
+            this.errors.push('Password should be 8 to 20 characters long!');
+        }
+    
+        // Check if the entered username is valid
+        if(validator.isLength(this.data.username, {min: 3, max: 20}) && !validator.isNumeric(this.data.username) && validator.isAlphanumeric(this.data.username)){
+    
+            // Check if the entered username is already exists
+            let usernameExists = await usersCollection.findOne({username: this.data.username});
+            console.log('Exists::' , usernameExists);
+            if(usernameExists){
+                console.log('Username is already taken!');
+                this.errors.push('This username is already taken!');
+            }
+        }
+    
+    
+        // Check if the entered email is valid
+        if(validator.isEmail(this.data.email)){
+    
+            // Check if the entered email exists already
+            let emailExists = await usersCollection.findOne({email: this.data.email});
+            if(emailExists){
+                console.log('Email Already Exists!');
+                this.errors.push('This email is already taken!');
+            }
+        }
 
-    if(!validator.isLength(this.data.username, {min: 3, max: 20}) || validator.isNumeric(this.data.username)){
-        this.errors.push('Invalid username!');
-    }
-    else
-    // Check for if user name contains () {} [] \ | * & ^ % $ # @ ! ` ~ < .
-    if(!validator.isAlphanumeric(this.data.username)){
-        this.errors.push('Invalid username!');
-    }
-
-    if(!validator.isEmail(this.data.email)){
-        this.errors.push('Invalid email!');
-    }
-
-    if(!validator.isLength(this.data.password, {min: 8, max: 20})){
-        this.errors.push('Password should be 8 to 20 characters long!');
-    }
+       // console.log('Length Before validation', this.errors.length);
+        resolve();
+    });
 }
 
 User.prototype.register = function(){
-    this.cleanUpForSignup();
-    this.validate();
+    return new Promise(async (resolve, reject) => {
+        this.cleanUpForSignup();
+        await this.validate();
+    
+        // if only the data is validated push the data to the database
 
-    // if only the data is validated push the data to the database
-    if(this.errors.length === 0){
-        // Entered password hash value will get stored as a password in the database
-        this.data.password = bcrypt.hashSync(this.data.password, salt);
-
-        usersCollection.insertOne(this.data, ()=>{
-            console.log('Inserted Successfully!');
-        });
-    }
+        //console.log('Length after validation', this.errors.length);
+        if(this.errors.length === 0){
+            // Entered password hash value will get stored as a password in the database
+            this.data.password = bcrypt.hashSync(this.data.password, salt);
+    
+            await usersCollection.insertOne(this.data);
+            resolve();
+        }
+        else{
+            reject(this.errors);
+        }
+    })
 }
 
 

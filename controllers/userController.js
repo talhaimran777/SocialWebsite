@@ -2,16 +2,19 @@ const User = require('../models/User');
 
 exports.register = (req, res) =>{
     let user = new User(req.body);
-    user.register();
-    if(user.errors.length !== 0 ){
-        user.errors.forEach((err) =>{
+    user.register()
+    .then(() => {
+        // If registration was successful then bring the user into the application
+        req.session.user = {username: user.data.username};
+        req.session.save(() => res.redirect('/'));
+    })
+    .catch((regErrors) =>{
+        console.log('Errors: ', regErrors);
+        regErrors.forEach((err) =>{
             req.flash('regErrors',err);
         })
         req.session.save(() => res.redirect('/'));
-    }
-    else{
-        res.redirect('/');
-    }
+    });
 }
 exports.login = (req, res) =>{
     let user = new User(req.body);
