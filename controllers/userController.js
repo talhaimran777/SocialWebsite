@@ -5,7 +5,8 @@ exports.register = (req, res) =>{
     user.register()
     .then(() => {
         // If registration was successful then bring the user into the application
-        req.session.user = {username: user.data.username,  avatar: user.avatar};
+        req.session.user = {username: user.data.username,  avatar: user.avatar, _id: user.data._id};
+
         req.session.save(() => res.redirect('/'));
     })
     .catch((regErrors) =>{
@@ -34,7 +35,8 @@ exports.login = (req, res) =>{
     .then(result => {
         req.session.user = {
             username: user.data.username,
-            avatar: user.avatar
+            avatar: user.avatar,
+            _id: user.data._id
         }
         // Allowing the session data to get saved to the database and then redirects to /
         req.session.save(() => res.redirect('/'));

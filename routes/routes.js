@@ -23,6 +23,10 @@ router.post('/logout', userController.logout);
 
 
 // Posts related routes
+// This route renders the create post page if you are logged in
 router.get('/create-post',userController.checkLoggedIn, postsController.createPost);
+
+// This actuly saves the post data to the database
+router.post('/create-post',postsController.savePost);
 
 module.exports = router;
